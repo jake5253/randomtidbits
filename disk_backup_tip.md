@@ -38,10 +38,9 @@ To avoid making a separate temporary file the full size of the disk, you can str
 mksquashfs empty-dir squash.img -p 'sda_backup.img f 444 root root dd if=/dev/sda bs=4M'
 ```
 
-* If you already have backup.img.gz, use 
-```sudo mksquashfs image-dir /path/of/new/compressed/squash.img -p 'sda_image_inside_squash.img f 444 root root gzip -dc /path/to/existing/backup.img.gz'
-```
-to extract directly from the gzip into a compressed squashfs.
+* If you already have backup.img.gz, you can avoid exracting a huge temporary image before moving it into a squash by extracting it directly into the squash image 
+`sudo mksquashfs image-dir /path/of/new/compressed/squash.img -p 'sda_image_inside_squash.img f 444 root root gzip -dc /path/to/existing/backup.img.gz'
+`
 
 
 **Mounting a compressed partition image**
@@ -58,14 +57,14 @@ sudo mount squash_mount/sda1_backup.img compressed_image
 Now your image is mounted under compressed_image.
 
 If you wanted to simply restore the disk image onto a partition at this point (instead of mounting it to browse/read the contents), dd the image at squash_mount/sda1_backup.img onto the destination instead of mounting.
-```sudo dd if=squash_mount/sda1_backup.img of=/dev/sda1
-```
+`sudo dd if=squash_mount/sda1_backup.img of=/dev/sda1
+`
 
 **Mounting a compressed full disk image**
 This requires you to use a package called kpartx. kpartx allows you to mount individual partitions in a full disk image.
 
-```sudo apt-get install kpartx
-```
+`sudo apt-get install kpartx
+`
 First, mount your squashed partition that contains the full disk image
 
 ```mkdir compressed_image
@@ -73,8 +72,8 @@ sudo mount squash.img compressed_image
 ```
 Now you need to create devices for each of the partitions in the full disk image:
 
-```sudo kpartx -a compressed_image/sda_backup.img
-```
+`sudo kpartx -a compressed_image/sda_backup.img
+`
 This will create devices for the partitions in the full disk image at _/dev/mapper/loopNpP_ where _N_ is the number assigned for the loopback device, and _P_ is the partition number. For example: /dev/mapper/loop0p1.
 
 Now you have a way to mount the individual partitions in the full disk image:
