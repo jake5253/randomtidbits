@@ -19,9 +19,11 @@ sudo dd if=/dev/sda1 of=image/sda1_backup.img bs=4M
 Where _sda_ is the name of the device, and _1_ is the partition number. Adjust accordingly for your system if you want to image a different device or partition.
 
 **Making a Whole Disk Image**
+
 ```mkdir image
 sudo dd if=/dev/sda of=image/sda_backup.img bs=4M
 ```
+
 Where _sda_ is the name of the device. Adjust accordingly for your system if you want to image a different device.
 
 **Compression**
@@ -49,32 +51,41 @@ First mount the squashfs image, then mount the partition image stored in the mou
 ```mkdir squash_mount
 sudo mount squash.img squash_mount
 ```
+
 Now you have the compressed image mounted, mount the image itself (that is inside the squashfs image)
 
 ```mkdir compressed_image
 sudo mount squash_mount/sda1_backup.img compressed_image
 ```
+
 Now your image is mounted under compressed_image.
 
+
 If you wanted to simply restore the disk image onto a partition at this point (instead of mounting it to browse/read the contents), dd the image at squash_mount/sda1_backup.img onto the destination instead of mounting.
-`sudo dd if=squash_mount/sda1_backup.img of=/dev/sda1
-`
+
+`sudo dd if=squash_mount/sda1_backup.img of=/dev/sda1`
+
 
 **Mounting a compressed full disk image**
 This requires you to use a package called kpartx. kpartx allows you to mount individual partitions in a full disk image.
 
-`sudo apt-get install kpartx
-`
+`sudo apt-get install kpartx`
+
+
 First, mount your squashed partition that contains the full disk image
 
 ```mkdir compressed_image
 sudo mount squash.img compressed_image
 ```
+
+
 Now you need to create devices for each of the partitions in the full disk image:
 
-`sudo kpartx -a compressed_image/sda_backup.img
-`
+`sudo kpartx -a compressed_image/sda_backup.img`
+
+
 This will create devices for the partitions in the full disk image at _/dev/mapper/loopNpP_ where _N_ is the number assigned for the loopback device, and _P_ is the partition number. For example: /dev/mapper/loop0p1.
+
 
 Now you have a way to mount the individual partitions in the full disk image:
 
