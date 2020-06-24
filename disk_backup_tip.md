@@ -41,6 +41,7 @@ mksquashfs empty-dir squash.img -p 'sda_backup.img f 444 root root dd if=/dev/sd
 ```
 
 * If you already have backup.img.gz, you can avoid exracting a huge temporary image before moving it into a squash by extracting it directly into the squash image 
+
 `sudo mksquashfs image-dir /path/of/new/compressed/squash.img -p 'sda_image_inside_squash.img f 444 root root gzip -dc /path/to/existing/backup.img.gz'
 `
 
