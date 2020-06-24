@@ -3,7 +3,7 @@ If the disk is in good working condition, you will get better compression if you
 
 If you're imaging an entire disk then you will want to wash each of the partitions on the disk.
 
-**CAUTION**: Be careful, you want to set the of to a file in the mounted partition, NOT THE PARTITION ITSELF!
+**CAUTION**: Be careful, you want to set the _of=_ to a file in the mounted partition, **NOT THE PARTITION ITSELF**!
 
 `mkdir image_source
 sudo mount /dev/sda1 image_source
@@ -33,7 +33,8 @@ To avoid making a separate temporary file the full size of the disk, you can str
 
 `mkdir empty-dir
 mksquashfs empty-dir squash.img -p 'sda_backup.img f 444 root root dd if=/dev/sda bs=4M'`
-If you already have backup.img.gz, use `sudo mksquashfs image-dir /path/of/new/compressed/squash.img -p 'sda_image_inside_squash.img f 444 root root gzip -dc /path/to/existing/backup.img.gz'`
+
+* If you already have backup.img.gz, use `sudo mksquashfs image-dir /path/of/new/compressed/squash.img -p 'sda_image_inside_squash.img f 444 root root gzip -dc /path/to/existing/backup.img.gz'` to extract directly from the gzip into a compressed squashfs.
 
 
 **Mounting a compressed partition image**
