@@ -2,6 +2,7 @@
 If the disk is in good working condition, you will get better compression if you wash the empty space on the disk with zeros. If the disk is failing, skip this step.
 
 If you're imaging an entire disk then you will want to wash each of the partitions on the disk.
+  *Note: this is unnecessary on SSDs, NVMEs and other flash-based media  
 
 **CAUTION**: Be careful, you want to set the _of=_ to a file in the mounted partition, **NOT THE PARTITION ITSELF**!
 
@@ -36,20 +37,24 @@ mksquashfs image squash.img
 **Streaming Compression**
 To avoid making a separate temporary file the full size of the disk, you can stream into a squashfs image.
 
-```mkdir empty-dir
+```
+mkdir empty-dir
 mksquashfs empty-dir squash.img -p 'sda_backup.img f 444 root root dd if=/dev/sda bs=4M'
 ```
 
 * If you already have backup.img.gz, you can avoid exracting a huge temporary image before moving it into a squash by extracting it directly into the squash image 
 
-`sudo mksquashfs image-dir /path/of/new/compressed/squash.img -p 'sda_image_inside_squash.img f 444 root root gzip -dc /path/to/existing/backup.img.gz'
-`
+```
+mkdir empty-dir
+sudo mksquashfs empty-dir /path/of/new/compressed/squash.img -p 'sda_image_inside_squash.img f 444 root root gzip -dc /path/to/existing/backup.img.gz'
+````
 
 
 **Mounting a compressed partition image**
 First mount the squashfs image, then mount the partition image stored in the mounted squashfs image.
 
-```mkdir squash_mount
+```
+mkdir squash_mount
 sudo mount squash.img squash_mount
 ```
 
@@ -75,14 +80,15 @@ This requires you to use a package called kpartx. kpartx allows you to mount ind
 
 First, mount your squashed partition that contains the full disk image
 
-```mkdir compressed_image
+```
+mkdir compressed_image
 sudo mount squash.img compressed_image
 ```
 
 
 Now you need to create devices for each of the partitions in the full disk image:
 
-`sudo kpartx -a compressed_image/sda_backup.img`
+`sudo kpartx -auv compressed_image/sda_backup.img`
 
 
 This will create devices for the partitions in the full disk image at _/dev/mapper/loopNpP_ where _N_ is the number assigned for the loopback device, and _P_ is the partition number. For example: /dev/mapper/loop0p1.
